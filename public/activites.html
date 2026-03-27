@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activités | Terrasses des Boutisses</title>
+    <link rel="stylesheet" href="activites.css">
+    <link href="https://fonts.googleapis.com/css2?family=Advent+Pro:ital,wght@0,100..900;1,100..900&family=Amarante&family=Dancing+Script:wght@400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=New+Rocker&family=Rye&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/> <!-- Pour les icônes des réseaux et la map google -->
+</head>
+<body>
+    <header>
+        
+        <section class="header">
+            <div class="logo">
+                <h2>Gîte Terrasses des Boutisses</h2>
+            </div>
+
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div> <!-- pour le menu mobile -->
+
+            <nav class="navbar">
+                <ul>
+                    <li><a href="index.html">Accueil</a></li>
+                    <li id="has-submenu">
+                        <a href="legite.html">Le Gîte</a>
+                        <ul id="submenu">
+                            <li><a href="gitePrincipal.html" id="gitePrincipal">Le gîte principal</a></li>
+                            <li><a href="leschambres.html" id="chambres">Les chambres</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="activites.html" class="active">Activités</a></li>
+                    <li><a href="tarifs.html">Tarifs</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </section>
+
+    </header>
+
+    <main>
+        <section class="bienvenue">
+            <img src="./Activites/cyclisme.avif" alt="Balade à vélo" class="imgr">
+
+            <div class="bienvenue-text">
+                <h1>Gîte Terrasses des Boutisses</h1>
+                <h4>Au coeur des Monts d'Ardèche</h4>
+            </div>
+        </section>
+
+        <section class="activites">
+            <section>
+                <figure class="randonnees">
+                    <img src="./Activites/rochebonne.webp" alt="Rochebonne">
+                    <figcaption>
+                        <h1>Randonnées</h1>
+                        <p>Au départ de notre châtaigneraie de 15ha, rejoignez de multiples sentiers vous offrant des randonnées avec des points de vue sur les Monts d’Ardèche :</p>
+                        <ul>
+                            <li>La Dolce Via (2km)</li>
+                            <li>Château de Rochebonne (7,5km)</li>
+                            <li>Rocher de Brion (14km)</li>
+                            <li>Lac de Devesset (18km)</li>
+                            <li>Et bien d’autres !</li>
+                        </ul>
+                        <div class="liens">
+                            <a href="https://www.dolce-via.com/fr/" target="_blank" rel="noopener noreferrer">La Dolce Via</a>
+                        </div>
+                    </figcaption>
+                </figure>
+            </section>
+
+            <section>
+                <figure class="cyclotourisme">
+                    <figcaption>
+                        <h1>Cyclotourisme</h1>
+                        <p>Nous mettons à votre disposition une dizaine de vélos avec lesquels vous pourrez rejoindre une piste cyclable à deux pats du gîte qui vous conduit vers Lamastre ou Le Cheylard en surplombant la rivière de l’Eyrieux. Une centaine de kilomètres ont été aménagés par le territoire afin de vous permettre de sillonner notre région. Jetez un coup d'œil à leur site !</p>
+                        <p>En juin, une des plus grandes épreuves cyclotouristes d’Europe propose à des milliers de participants de sillonner notre belle région sur 200km. Retrouvez tous les parcours adaptés à chacun sur leur site internet !</p>
+                        <div class="liens">
+                            <a href="https://www.ardeche-guide.com/decouvrir/top-10-des-experiences-incontournables/ardeche-velo/" target="_blank" rel="noopener noreferrer">L'Ardèche à vélo</a>
+                        </div>
+                    </figcaption>
+                    <img src="./Activites/cyclisme.avif" alt="Balade à vélo">
+                </figure>
+            </section>
+
+            <section>
+                <figure class="vieArdechoise">
+                    <img src="./Activites/vie-ardechoise.avif" alt="Marché du Cheylard">
+                    <figcaption>
+                        <h1>La vie ardéchoise</h1>
+                        <p>Retrouvez tous les villages de caractère de :</p>
+                        <ul>
+                            <li>Désaignes</li>
+                            <li>Antraigues-sur-Volane</li>
+                            <li>Balazuc</li>
+                            <li>Vogüe</li>
+                            <li>Et bien d’autres !</li>
+                        </ul>
+                        <br>
+                        <p>… et les marchés proches du gîte !</p>
+                        <ul>
+                            <li>Le Cheylard le mercredi</li>
+                            <li>Lamastre le mardi et le samedi</li>
+                            <li>Le Chambon-sur-Lignon le samedi</li>
+                            <li>St Agève le lundi</li>
+                        </ul>
+                        <div class="liens">
+                            <a href="https://www.ardeche-guide.com/decouvrir/top-10-des-experiences-incontournables/villages-caractere/" target="_blank" rel="noopener noreferrer">Villages de caractère</a>
+                        </div>
+                    </figcaption>
+                </figure>
+            </section>
+
+            <section>
+                <figure class="jardinBoutisses">
+                    <figcaption>
+                        <h1>Le jardin des Boutisses</h1>
+                        <p>Flânez, jouez, passez du bon temps dans les jardins entourés d'arbres fruitiers, de plantes médicinales, de fleurs, et retrouvez toutes mes confections maison (confitures, châtaignes, tisanes).</p>
+                        <div class="liens">
+                            <a href="https://www.instagram.com/terrassesdesboutisses/profilecard/" target="_blank" rel="noopener noreferrer">Le jardin en photos</a>
+                        </div>
+                    </figcaption>
+                    <img src="./Jardinetvues/exterieur2.webp" alt="Chemin en direction du jardin">
+                </figure>
+            </section>
+
+            <section class="galerie">
+                <h2>Galerie</h2>
+                <div class="photos">
+                    <img src="./Activites/ane.webp" alt="Ane">
+                    <img src="./Activites/abeille.avif" alt="Abeille sur un coquelicot">
+                    <img src="./Activites/chèvres.webp" alt="Balade avec les chèvres">
+                    <img src="./Activites/divers1.avif" alt="Fleurs de bourraches cueillies">
+                    <img src="./Activites/divers3.webp" alt="Châtaignes sur une branche d'arbre">
+                    <img src="./Activites/divers4.avif" alt="Bocaux de fleurs de millepertuis">
+                    <img src="./Activites/lieu1.webp" alt="Balade à pieds près du gîte">
+                    <img src="./Activites/vue7.avif" alt="Vue hivernale sur la vallée">
+                    <img src="./Activites/vue5.webp" alt="Ruisseau au abords du gîte">
+                    <img src="./Activites/vue9.avif" alt="Mésange sur le bord de fenêtre en hiver">
+                    <img src="./Activites/forêt.webp" alt="Forêt par une belle journée d'automne">
+                    <img src="./Activites/divers5.avif" alt="Belle fleurs aux couleurs chatoyantes">
+                    <img src="./Activites/vue4.webp" alt="Vue sur la vallée avec un soleil couchant rougeoyant">
+                    <img src="./Activites/chèvres2.avif" alt="Chèvre sur une roche">
+                    <img src="./Activites/vue1.webp" alt="Promeneuse sur un rocher admirant la vue">
+                    <img src="./Activites/divers2.avif" alt="Fleurs bleues séchant dans un panier en osier">
+                    <img src="./Activites/vue6.webp" alt="Vue de dessous de la cîme des hêtres">
+                    <img src="./Activites/vie-ardechoise.avif" alt="Le marché">
+                    <img src="./Activites/cyclisme.avif" alt="Balade à vélo dans les alentours">
+                    <img src="./Activites/vue11.avif" alt="Vue sur une forêt dans la vallée">
+                    <img src="./Jardinetvues/divers2.webp" alt="Poussins">
+                    <img src="./Jardinetvues/divers.avif" alt="Parterre du fleurs muticolore">
+                    <img src="./Jardinetvues/exterieur1.webp" alt="La terrasse du gîte en hiver">
+                    <img src="./Jardinetvues/vue8.jpeg" alt="Vue sur la vallée en fin de journée">
+                </div>
+            </section>
+        </section>
+    
+    </main>
+
+    <footer>
+
+        <section class="adress">
+            <div class="adress1">
+                <h1>Gîte Terrasses des Boutisses</h1>
+                <p>250 Chemin de La Coste<br>07160 St Jean Roure</p>
+            </div>
+
+            <div class="adress2">
+                <p>Vous pouvez me contacter au 06.60.22.69.81 (Sabine)</p>
+                <p>ou par mail : <a href="mailto:giteterrassesdesboutisses@gmail.com">giteterrassesdesboutisses@gmail.com</a></p>
+            </div>
+        </section>
+
+        <section class="reseaux">
+            <h3>Vous pouvez me suivre sur :</h3>
+            <div class="socials">
+                <a href="https://www.facebook.com/giteterrassesdesboutisses/" aria-label="Facebook">
+                    <span class="fa-brands fa-facebook-f" aria-hidden="true"></span>
+                </a>
+
+                <a href="https://www.instagram.com/terrassesdesboutisses/profilecard/" aria-label="Instagram">
+                    <span class="fa-brands fa-instagram" aria-hidden="true"></span>
+                </a>
+            </div>
+
+            <div id="copyright">
+                <p>© 2026 - Site réalisé par <a href="#">LaToileCréative</a></p>
+            </div>
+        </section>
+
+    </footer>
+    
+<!-- Scroll event -->
+
+    <script>
+
+    const imgr = document.querySelector(".imgr");
+    const nav = document.querySelector(".header");
+    let lastScroll = 0;
+
+    window.addEventListener("scroll", () => {
+    const scroll = window.scrollY;
+    imgr.style.transform = `translateY(${scroll * 0.6}px)`;
+    })
+
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > lastScroll) {
+            nav.style.top = "-6rem"
+        } else {
+            nav.style.top = "0"
+        }
+        lastScroll = window.scrollY;
+    })
+
+
+     const toggle = document.querySelector('.menu-toggle');
+     const sidebar = document.querySelector('.navbar > ul');
+
+     toggle.addEventListener('click', () => {      
+         sidebar.classList.toggle('open');
+         toggle.classList.toggle('open');
+     })
+
+    </script>
+
+</body>
+</html>

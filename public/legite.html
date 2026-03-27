@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le gîte | Terrasses des Boutisses</title>
+    <link rel="stylesheet" href="legite.css">
+    <link href="https://fonts.googleapis.com/css2?family=Advent+Pro:ital,wght@0,100..900;1,100..900&family=Amarante&family=Dancing+Script:wght@400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=New+Rocker&family=Rye&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/> <!-- Pour les icônes des réseaux et la map google -->
+</head>
+<body>
+    <header>
+        
+        <section class="header">
+            <div class="logo">
+                <h2>Gîte Terrasses des Boutisses</h2>
+            </div>
+
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div> <!-- pour le menu mobile -->
+
+            <nav class="navbar">
+                <ul>
+                    <li><a href="index.html">Accueil</a></li>
+                    <li id="has-submenu">
+                        <a href="legite.html" class="active">Le Gîte</a>
+                        <ul id="submenu">
+                            <li><a href="gitePrincipal.html" id="gitePrincipal">Gîte principal</a></li>
+                            <li><a href="leschambres.html" id="chambres">Les chambres</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="activites.html">Activités</a></li>
+                    <li><a href="tarifs.html">Tarifs</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </section>
+
+    </header>
+
+    <main>
+        <section class="bienvenue">
+            <img src="./GrandGite/TdB3.avif" alt="Vue du gîte" class="imgr">
+
+            <div class="bienvenue-text">
+                <h1>Gîte Terrasses des Boutisses</h1>
+                <h4>Au coeur des Monts d'Ardèche</h4>
+            </div>
+
+            <div>
+                <a href="contact.html" class="reservation">Réservez votre séjour</a>
+            </div>
+        </section>
+
+        <section class="presentationGite">
+            <header class="texteGite">
+                <p>Bienvenu au gîte des Terrasses des Boutisses : que vous soyez en famille, entre amis ou en couple, je me fais un plaisir de vous accueillir au coeur des Monts d'Ardèche, dans un lieu magique mis à votre disposition pour le bonheur de tous.</p>
+            </header>
+        
+            <section class="giteEtChambres">
+                <figure>
+                    <a href="gitePrincipal.html"><img src="./GrandGite/TdB5.avif" alt="Lit double et mézzanine dans une chambre du gîte"></a>
+                    <figcaption>
+                        <h2>Le gîte principal</h2>
+                        <p>Pour 9 personnes</p>
+                        <p>Jusqu'à 15 personnes avec les chambres</p>
+                    </figcaption>
+                </figure>
+
+                <figure>
+                    <a href="leschambres.html"><img src="./ChambreBoutisse/cq2.jpeg" alt="Lit double dans une chambre"></a>
+                    <figcaption>
+                        <h2>Les chambres seules</h2>
+                        <p>En guise d'étape ou de complément au gîte</p>
+                        <p>De 2 à 7 personnes</p>
+                    </figcaption>
+                </figure>
+            </section>
+        </section>
+
+    </main>
+
+    <footer>
+
+        <section class="adress">
+            <div class="adress1">
+                <h1>Gîte Terrasses des Boutisses</h1>
+                <p>250 Chemin de La Coste<br>07160 St Jean Roure</p>
+            </div>
+
+            <div class="adress2">
+                <p>Vous pouvez me contacter au 06.60.22.69.81 (Sabine)</p>
+                <p>ou par mail : <a href="mailto:giteterrassesdesboutisses@gmail.com">giteterrassesdesboutisses@gmail.com</a></p><br>
+            </div>
+        </section>
+
+        <section class="reseaux">
+            <h3>Vous pouvez me suivre sur :</h3>
+            <div class="socials">
+                <a href="https://www.facebook.com/giteterrassesdesboutisses/" aria-label="Facebook">
+                    <span class="fa-brands fa-facebook-f" aria-hidden="true"></span>
+                </a>
+
+                <a href="https://www.instagram.com/terrassesdesboutisses/profilecard/" aria-label="Instagram">
+                    <span class="fa-brands fa-instagram" aria-hidden="true"></span>
+                </a>
+            </div>
+
+            <div id="copyright">
+                <p>© 2026 - Site réalisé par <a href="#">LaToileCréative</a></p>
+            </div>
+        </section>
+
+    </footer>
+    
+<!-- Scroll event -->
+
+    <script>
+
+    const imgr = document.querySelector(".imgr");
+    const nav = document.querySelector(".header");
+    let lastScroll = 0;
+
+    window.addEventListener("scroll", () => {
+    const scroll = window.scrollY;
+    imgr.style.transform = `translateY(${scroll * 0.6}px)`;
+    })
+
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > lastScroll) {
+            nav.style.top = "-6rem"
+        } else {
+            nav.style.top = "0"
+        }
+        lastScroll = window.scrollY;
+    })
+
+
+     const toggle = document.querySelector('.menu-toggle');
+     const sidebar = document.querySelector('.navbar > ul');
+
+     toggle.addEventListener('click', () => {      
+         sidebar.classList.toggle('open');
+         toggle.classList.toggle('open');
+     })
+
+    </script>
+
+</body>
+</html>
