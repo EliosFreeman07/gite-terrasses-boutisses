@@ -4,10 +4,10 @@ const nodemailer = require('nodemailer');
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
-const Message = require('./models/Message');
+const Message = require('./models/message');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const Admin = require('./models/Admin');
+const Admin = require('./models/admin');
 
 const verifierToken = (req, res, next) => {
     const token = req.headers['authorization'];
