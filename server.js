@@ -1,6 +1,7 @@
 require('dotenv').config();
 
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
+const resend = new Resend(process.env.RESEND_API_KEY);
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
@@ -24,11 +25,9 @@ const verifierToken = (req, res, next) => {
     }
 };
 
-
 mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log('Connecté à MongoDB'))
     .catch(err => console.error('Erreur connexion MongoDB :', err));
-
 
 app.use(express.static('public'));
 app.use(express.json());
@@ -43,16 +42,6 @@ app.get('/api/admin/messages', verifierToken, async (req, res) => {
     }
 });
 
-const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    }
-});
-
 app.post('/api/contact', async (req, res) => {
     const { nom, prenom, email, phone, message } = req.body;
 
@@ -60,26 +49,25 @@ app.post('/api/contact', async (req, res) => {
         return res.status(400).json({ success: false, message: 'Champs requis manquants.' });
     }
 
-    const mailOptions = {
-        from: `"${prenom} ${nom}" <${process.env.EMAIL_USER}>`,
-        to: process.env.EMAIL_TO,
-        replyTo: email,
-        subject: `Nouveau message de ${prenom} ${nom}`,
-        text: `
+    try {
+        const nouveauMessage = new Message({ nom, prenom, email, phone, message });
+        await nouveauMessage.save();
+
+        await resend.emails.send({
+            from: 'Gîte Terrasses des Boutisses <onboarding@resend.dev>',
+            to: process.env.EMAIL_TO,
+            reply_to: email,
+            subject: `Nouveau message de ${prenom} ${nom}`,
+            text: `
 Nom : ${nom} ${prenom}
 Email : ${email}
 Téléphone : ${phone || 'Non renseigné'}
 
 Message :
 ${message}
-        `
-    };
+            `
+        });
 
-    try {
-        const nouveauMessage = new Message({ nom, prenom, email, phone, message });
-        await nouveauMessage.save();
-        console.log('Message sauvegardé :', nouveauMessage);
-        await transporter.sendMail(mailOptions);
         res.json({ success: true, message: 'Votre message a bien été envoyé.' });
     } catch (err) {
         console.error('Erreur :', err);
@@ -114,15 +102,13 @@ app.post('/api/admin/login', async (req, res) => {
 app.post('/api/admin/repondre', verifierToken, async (req, res) => {
     const { email, prenom, texte } = req.body;
 
-    const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: email,
-        subject: `Réponse à votre message - Gîte Terrasses des Boutisses`,
-        text: `Bonjour ${prenom},\n\n${texte}\n\nCordialement,\nSabine\nGîte Terrasses des Boutisses`
-    };
-
     try {
-        await transporter.sendMail(mailOptions);
+        await resend.emails.send({
+            from: 'Gîte Terrasses des Boutisses <onboarding@resend.dev>',
+            to: email,
+            subject: 'Réponse à votre message - Gîte Terrasses des Boutisses',
+            text: `Bonjour ${prenom},\n\n${texte}\n\nCordialement,\nSabine\nGîte Terrasses des Boutisses`
+        });
         res.json({ success: true });
     } catch (err) {
         console.error('Erreur envoi réponse :', err);
@@ -130,8 +116,6 @@ app.post('/api/admin/repondre', verifierToken, async (req, res) => {
     }
 });
 
-
-// Réception d'une réservation depuis le formulaire
 app.post('/api/reservations', async (req, res) => {
     const { nom, prenom, email, phone, startDate, endDate, nbNuits, nbPersonnes, prixTotal } = req.body;
 
@@ -143,9 +127,8 @@ app.post('/api/reservations', async (req, res) => {
         const nouvelleResa = new Reservation({ nom, prenom, email, phone, startDate, endDate, nbNuits, nbPersonnes, prixTotal });
         await nouvelleResa.save();
 
-        // Tentative d'envoi email sans bloquer la réponse
-        transporter.sendMail({
-            from: process.env.EMAIL_USER,
+        resend.emails.send({
+            from: 'Gîte Terrasses des Boutisses <onboarding@resend.dev>',
             to: process.env.EMAIL_TO,
             subject: `Nouvelle demande de réservation - ${prenom} ${nom}`,
             text: `
@@ -160,7 +143,7 @@ Nombre de nuits : ${nbNuits}
 Nombre de personnes : ${nbPersonnes}
 Prix total : ${prixTotal} €
             `
-        }).catch(err => console.error('Email non envoyé (SMTP bloqué) :', err.message));
+        }).catch(err => console.error('Email réservation non envoyé :', err.message));
 
         res.json({ success: true, message: 'Votre demande de réservation a bien été envoyée.' });
 
@@ -170,7 +153,6 @@ Prix total : ${prixTotal} €
     }
 });
 
-// Consultation des réservations (admin uniquement)
 app.get('/api/admin/reservations', verifierToken, async (req, res) => {
     try {
         const reservations = await Reservation.find().sort({ date: -1 });
@@ -181,7 +163,6 @@ app.get('/api/admin/reservations', verifierToken, async (req, res) => {
     }
 });
 
-// Modifier le statut d'une réservation depuis l'admin :
 app.patch('/api/admin/reservations/:id', verifierToken, async (req, res) => {
     const { statut } = req.body;
     const statutsValides = ['en attente', 'confirmée', 'annulée'];
@@ -205,12 +186,12 @@ app.patch('/api/admin/reservations/:id', verifierToken, async (req, res) => {
             ? `Bonjour ${resa.prenom},\n\nNous avons le plaisir de vous confirmer votre réservation :\n\nArrivée : ${new Date(resa.startDate).toLocaleDateString('fr-FR')}\nDépart : ${new Date(resa.endDate).toLocaleDateString('fr-FR')}\nNombre de nuits : ${resa.nbNuits}\nNombre de personnes : ${resa.nbPersonnes}\nPrix total : ${resa.prixTotal} €\n\nUn acompte de 30% (${Math.round(resa.prixTotal * 0.3)} €) sera nécessaire pour finaliser la réservation.\n\nCordialement,\nSabine\nGîte Terrasses des Boutisses`
             : `Bonjour ${resa.prenom},\n\nNous vous informons que votre réservation a été annulée :\n\nArrivée : ${new Date(resa.startDate).toLocaleDateString('fr-FR')}\nDépart : ${new Date(resa.endDate).toLocaleDateString('fr-FR')}\n\nN'hésitez pas à nous contacter pour toute question.\n\nCordialement,\nSabine\nGîte Terrasses des Boutisses`;
 
-        transporter.sendMail({
-            from: process.env.EMAIL_USER,
+        resend.emails.send({
+            from: 'Gîte Terrasses des Boutisses <onboarding@resend.dev>',
             to: resa.email,
             subject: sujet,
             text: texte
-        }).catch(err => console.error('Email statut non envoyé (SMTP bloqué) :', err.message));
+        }).catch(err => console.error('Email statut non envoyé :', err.message));
 
         res.json({ success: true });
 
@@ -219,10 +200,6 @@ app.patch('/api/admin/reservations/:id', verifierToken, async (req, res) => {
         res.status(500).json({ success: false, message: 'Erreur serveur.' });
     }
 });
-
-// app.get('/', (req, res) => {
-//     res.sendFile(__dirname + '/public/index.html');
-// });
 
 app.listen(3000, () => {
     console.log('Serveur démarré sur http://localhost:3000');
