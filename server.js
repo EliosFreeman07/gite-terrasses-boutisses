@@ -139,11 +139,16 @@ app.post('/api/reservations', async (req, res) => {
         return res.status(400).json({ success: false, message: 'Champs requis manquants.' });
     }
 
-    const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: process.env.EMAIL_TO,
-        subject: `Nouvelle demande de réservation - ${prenom} ${nom}`,
-        text: `
+    try {
+        const nouvelleResa = new Reservation({ nom, prenom, email, phone, startDate, endDate, nbNuits, nbPersonnes, prixTotal });
+        await nouvelleResa.save();
+
+        // Tentative d'envoi email sans bloquer la réponse
+        transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: process.env.EMAIL_TO,
+            subject: `Nouvelle demande de réservation - ${prenom} ${nom}`,
+            text: `
 Nouvelle demande de réservation :
 
 Nom : ${prenom} ${nom}
@@ -154,14 +159,11 @@ Départ : ${endDate}
 Nombre de nuits : ${nbNuits}
 Nombre de personnes : ${nbPersonnes}
 Prix total : ${prixTotal} €
-        `
-    };
+            `
+        }).catch(err => console.error('Email non envoyé (SMTP bloqué) :', err.message));
 
-    try {
-        const nouvelleResa = new Reservation({ nom, prenom, email, phone, startDate, endDate, nbNuits, nbPersonnes, prixTotal });
-        await nouvelleResa.save();
-        await transporter.sendMail(mailOptions);
         res.json({ success: true, message: 'Votre demande de réservation a bien été envoyée.' });
+
     } catch (err) {
         console.error('Erreur réservation :', err);
         res.status(500).json({ success: false, message: 'Erreur serveur. Réessayez plus tard.' });
@@ -192,7 +194,7 @@ app.patch('/api/admin/reservations/:id', verifierToken, async (req, res) => {
         const resa = await Reservation.findByIdAndUpdate(
             req.params.id,
             { statut },
-            { new: true } // retourne le document mis à jour
+            { new: true }
         );
 
         const sujet = statut === 'confirmée'
@@ -200,17 +202,18 @@ app.patch('/api/admin/reservations/:id', verifierToken, async (req, res) => {
             : 'Annulation de votre réservation - Gîte Terrasses des Boutisses';
 
         const texte = statut === 'confirmée'
-            ? `Bonjour ${resa.prenom},\n\nNous avons le plaisir de vous confirmer votre réservation aux dates suivantes :\n\nArrivée : ${new Date(resa.startDate).toLocaleDateString('fr-FR')}\nDépart : ${new Date(resa.endDate).toLocaleDateString('fr-FR')}\nNombre de nuits : ${resa.nbNuits}\nNombre de personnes : ${resa.nbPersonnes}\nPrix total : ${resa.prixTotal} €\n\nUn acompte de 30% (${Math.round(resa.prixTotal * 0.3)} €) sera nécessaire pour finaliser la réservation.\n\nCordialement,\nSabine\nGîte Terrasses des Boutisses`
-            : `Bonjour ${resa.prenom},\n\nNous vous informons que votre réservation aux dates suivantes a été annulée :\n\nArrivée : ${new Date(resa.startDate).toLocaleDateString('fr-FR')}\nDépart : ${new Date(resa.endDate).toLocaleDateString('fr-FR')}\n\nN'hésitez pas à nous contacter pour toute question.\n\nCordialement,\nSabine\nGîte Terrasses des Boutisses`;
+            ? `Bonjour ${resa.prenom},\n\nNous avons le plaisir de vous confirmer votre réservation :\n\nArrivée : ${new Date(resa.startDate).toLocaleDateString('fr-FR')}\nDépart : ${new Date(resa.endDate).toLocaleDateString('fr-FR')}\nNombre de nuits : ${resa.nbNuits}\nNombre de personnes : ${resa.nbPersonnes}\nPrix total : ${resa.prixTotal} €\n\nUn acompte de 30% (${Math.round(resa.prixTotal * 0.3)} €) sera nécessaire pour finaliser la réservation.\n\nCordialement,\nSabine\nGîte Terrasses des Boutisses`
+            : `Bonjour ${resa.prenom},\n\nNous vous informons que votre réservation a été annulée :\n\nArrivée : ${new Date(resa.startDate).toLocaleDateString('fr-FR')}\nDépart : ${new Date(resa.endDate).toLocaleDateString('fr-FR')}\n\nN'hésitez pas à nous contacter pour toute question.\n\nCordialement,\nSabine\nGîte Terrasses des Boutisses`;
 
-        await transporter.sendMail({
+        transporter.sendMail({
             from: process.env.EMAIL_USER,
             to: resa.email,
             subject: sujet,
             text: texte
-        });
+        }).catch(err => console.error('Email statut non envoyé (SMTP bloqué) :', err.message));
 
         res.json({ success: true });
+
     } catch (err) {
         console.error('Erreur mise à jour statut :', err);
         res.status(500).json({ success: false, message: 'Erreur serveur.' });
