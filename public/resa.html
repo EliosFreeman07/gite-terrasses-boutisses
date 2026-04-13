@@ -3,14 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact | Terrasses des Boutisses</title>
-    <link rel="stylesheet" href="contact.css">
+    <title>Réservations | Terrasses des Boutisses</title>
+    <link rel="stylesheet" href="resa.css">
     <link href="https://fonts.googleapis.com/css2?family=Advent+Pro:ital,wght@0,100..900;1,100..900&family=Amarante&family=Dancing+Script:wght@400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=New+Rocker&family=Rye&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/> <!-- Pour les icônes des réseaux et la map google -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"/> <!-- Pour les téléphones internationaux -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"></script>
 </head>
+
+
 <body>
     <header>
         
@@ -37,8 +39,8 @@
                     </li>
                     <li><a href="activites.html">Activités</a></li>
                     <li><a href="tarifs.html">Tarifs</a></li>
-                    <li><a href="contact.html" class="active">Contact</a></li>
-                    <li><a href="resa.html">Réservations</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="resa.html" class="active">Réservations</a></li>
                 </ul>
             </nav>
         </section>
@@ -46,50 +48,54 @@
     </header>
 
     <main>
-        <!-- <section class="bienvenue">
-            <img src="./Jardinetvues/terrasse3.jpeg" alt="Vue magnifique de la terrasse devant le gîte" class="imgr">
 
-            <div class="bienvenue-text">
-                <h1>Gîte Les Terrasses des Boutisses</h1>
-                <h4>Au coeur des Monts d'Ardèche</h4>
+        <p id="formMessage"></p>
+
+        <form class="bookingForm" id="bookingForm">
+
+            <h2>Réservez votre séjour</h2>
+
+            <div class="coordonnees1">
+                <label for="nom">Nom *</label>
+                <input id="nom" type="text" name="nom" required>
+
+                <label for="prenom">Prénom *</label>
+                <input id="prenom" type="text" name="prenom" required>
             </div>
-        </section> -->
 
-        <section class="formulaire-contact">
-            <header class="reserver">
-                <h2>Pour réserver</h2>
-                <p>Pour toute demande de réservation ou pour toute question vous pouvez me contacter :</p>
-                <p>- soit par téléphone au 06.60.22.69.81</p>
-                <p>- soit par mail : giteterrassesdesboutisses@gmail.com</p>
-                <p>- soit via ce formulaire</p>
-            </header>
+            <div class="coordonnees2">
+                <label for="email">Email *</label>
+                <input id="email" type="email" name="email" required>
 
-            <form class="contact-form">
-                <div class="row">
-                    <input type="text" name="nom" placeholder="Nom *" required autocomplete="family-name">
-                    <input type="text" name="prenom" placeholder="Prénom *" required autocomplete="given-name">
-                </div>
-                <div class="row">
-                    <input type="email" name="email" placeholder="Email *" required autocomplete="email">
-                    <input type="tel" id="phone" name="phone" placeholder="Téléphone *" required autocomplete="tel-national">
-                </div>
-                <div class="row">
-                    <textarea id="message" name="message" rows="10" placeholder="Message *" required></textarea>
-                </div>
-        
-                <div class="submit-link">
-                    <button type="submit">Envoyer</button>
-                </div>
+                <label for="phone">Téléphone *</label>
+                <input id="phone" type="tel" name="phone">
+            </div>
 
-                <div id="confirmationMessage" style="display:none; color:green; margin-top:20px;"></div>
-            </form>
-        </section>
+            <div class="people">
+                <label for="people">Nombre de personnes *</label>
+                <select id="people" name="people"></select>
+            </div>
 
-        <section class="nous-trouver">
-            <h2>Trouver le gîte</h2>
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2823.7550944646478!2d4.452428775494105!3d44.9486463676905!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47f57ff604e7f285%3A0x1bdadaf86690dff!2sG%C3%AEte%20terrasses%20des%20Boutisses!5e0!3m2!1sfr!2sfr!4v1771063810495!5m2!1sfr!2sfr" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-        </section>
+            <div class="dates">
+                <label for="start_date"">Arrivée</label>
+                <input id="start_date" type="date" name="start_date" required>  <!-- name important pour le backend -->
+                <label for="end_date">Départ</label>
+                <input id="end_date" type="date" name="end_date" required>
+            </div>
+
+            <div><span id="prixNuit">46</span> € / Nuit</div>
+            <div>Total : <span id="total"></span> €</div>
+
+            <button type="submit" class="btn">Valider</button>
+
+            <div class="nbResa">
+                <p>NB : La réservation sera effective à réception d'un accompte de 30% du montant total</p>
+            </div>
+
+        </form>
+
     </main>
+
 
     <footer>
 
@@ -123,10 +129,8 @@
         </section>
 
     </footer>
-    
-<!-- Scroll event -->
 
-    <script src="contact.js"></script>
+    <script src="resa.js"></script>
 
 </body>
 </html>

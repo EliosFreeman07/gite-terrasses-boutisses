@@ -8,6 +8,7 @@ const Message = require('./models/message');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Admin = require('./models/admin');
+const Reservation = require('./models/reservation');
 
 const verifierToken = (req, res, next) => {
     const token = req.headers['authorization'];
@@ -126,6 +127,93 @@ app.post('/api/admin/repondre', verifierToken, async (req, res) => {
     } catch (err) {
         console.error('Erreur envoi réponse :', err);
         res.status(500).json({ success: false });
+    }
+});
+
+
+// Réception d'une réservation depuis le formulaire
+app.post('/api/reservations', async (req, res) => {
+    const { nom, prenom, email, phone, startDate, endDate, nbNuits, nbPersonnes, prixTotal } = req.body;
+
+    if (!nom || !prenom || !email || !startDate || !endDate || !nbPersonnes) {
+        return res.status(400).json({ success: false, message: 'Champs requis manquants.' });
+    }
+
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: process.env.EMAIL_TO,
+        subject: `Nouvelle demande de réservation - ${prenom} ${nom}`,
+        text: `
+Nouvelle demande de réservation :
+
+Nom : ${prenom} ${nom}
+Email : ${email}
+Téléphone : ${phone || 'Non renseigné'}
+Arrivée : ${startDate}
+Départ : ${endDate}
+Nombre de nuits : ${nbNuits}
+Nombre de personnes : ${nbPersonnes}
+Prix total : ${prixTotal} €
+        `
+    };
+
+    try {
+        const nouvelleResa = new Reservation({ nom, prenom, email, phone, startDate, endDate, nbNuits, nbPersonnes, prixTotal });
+        await nouvelleResa.save();
+        await transporter.sendMail(mailOptions);
+        res.json({ success: true, message: 'Votre demande de réservation a bien été envoyée.' });
+    } catch (err) {
+        console.error('Erreur réservation :', err);
+        res.status(500).json({ success: false, message: 'Erreur serveur. Réessayez plus tard.' });
+    }
+});
+
+// Consultation des réservations (admin uniquement)
+app.get('/api/admin/reservations', verifierToken, async (req, res) => {
+    try {
+        const reservations = await Reservation.find().sort({ date: -1 });
+        res.json({ success: true, reservations });
+    } catch (err) {
+        console.error('Erreur récupération réservations :', err);
+        res.status(500).json({ success: false, message: 'Erreur serveur.' });
+    }
+});
+
+// Modifier le statut d'une réservation depuis l'admin :
+app.patch('/api/admin/reservations/:id', verifierToken, async (req, res) => {
+    const { statut } = req.body;
+    const statutsValides = ['en attente', 'confirmée', 'annulée'];
+
+    if (!statutsValides.includes(statut)) {
+        return res.status(400).json({ success: false, message: 'Statut invalide.' });
+    }
+
+    try {
+        const resa = await Reservation.findByIdAndUpdate(
+            req.params.id,
+            { statut },
+            { new: true } // retourne le document mis à jour
+        );
+
+        const sujet = statut === 'confirmée'
+            ? 'Confirmation de votre réservation - Gîte Terrasses des Boutisses'
+            : 'Annulation de votre réservation - Gîte Terrasses des Boutisses';
+
+        const texte = statut === 'confirmée'
+            ? `Bonjour ${resa.prenom},\n\nNous avons le plaisir de vous confirmer votre réservation aux dates suivantes :\n\nArrivée : ${new Date(resa.startDate).toLocaleDateString('fr-FR')}\nDépart : ${new Date(resa.endDate).toLocaleDateString('fr-FR')}\nNombre de nuits : ${resa.nbNuits}\nNombre de personnes : ${resa.nbPersonnes}\nPrix total : ${resa.prixTotal} €\n\nUn acompte de 30% (${Math.round(resa.prixTotal * 0.3)} €) sera nécessaire pour finaliser la réservation.\n\nCordialement,\nSabine\nGîte Terrasses des Boutisses`
+            : `Bonjour ${resa.prenom},\n\nNous vous informons que votre réservation aux dates suivantes a été annulée :\n\nArrivée : ${new Date(resa.startDate).toLocaleDateString('fr-FR')}\nDépart : ${new Date(resa.endDate).toLocaleDateString('fr-FR')}\n\nN'hésitez pas à nous contacter pour toute question.\n\nCordialement,\nSabine\nGîte Terrasses des Boutisses`;
+
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: resa.email,
+            subject: sujet,
+            text: texte
+        });
+
+        res.json({ success: true });
+    } catch (err) {
+        console.error('Erreur mise à jour statut :', err);
+        res.status(500).json({ success: false, message: 'Erreur serveur.' });
     }
 });
 

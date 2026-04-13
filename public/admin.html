@@ -3,13 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administration - Messages</title>
+    <title>Administration - Terrasses des Boutisses</title>
 </head>
 <body>
-    <h1>Messages reçus</h1>
+
+    <h1>Administration</h1>
     <button id="logoutBtn">Se déconnecter</button>
+
+    <div id="onglets">
+        <button id="ongletMessages" onclick="afficherOnglet('messages')">Messages</button>
+        <button id="ongletReservations" onclick="afficherOnglet('reservations')">Réservations</button>
+    </div>
+
     <div id="messagesList"></div>
+    <div id="reservationsList"></div>
 
     <script src="admin.js"></script>
+    
 </body>
 </html>
